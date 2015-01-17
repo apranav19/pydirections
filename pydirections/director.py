@@ -5,36 +5,56 @@ class Director(object):
         The Director class is responsible for handling a user's requests and processing the
         HTTP responses from Google's Directions API.
 	"""
-	def __init__(self):
-		"""
-			The constructor builds the base uri
-		"""
-		self.__base_uri = "https://maps.googleapis.com/maps/api/directions/{0}?"
-		self.__output_format = "json"
+	__ACCEPTABLE_MODES = set(["driving", "walking", "bicycling", "transit"])
+	__BASE_URL = "https://maps.googleapis.com/maps/api/directions/{0}?"
+	__REQUEST_URL = None
+	__CURRENT_OUTPUT_FORMAT = "json"
 
-	@property
-	def base_uri(self):
+	@classmethod
+	def is_valid_mode(cls, mode):
+		"""
+		   Checks if a given mode of transport is valid
+		"""
+		return mode in cls.__ACCEPTABLE_MODES
+
+	@classmethod
+	def get_base_url(cls):
 		"""
 			Returns the base uri
 		"""
-		return self.__base_uri
+		return cls.__BASE_URL
 
-	@property
-	def output_format(self):
-	 	"""
-	 		Returns the current output format
-	 	"""
-		return self.__output_format
-
-	@output_format.setter
-	def change_output_format(self, output_format):
+	@classmethod
+	def get_request_url(cls):
 		"""
-			Changes the current output format to the one provided
-		""" 
-		self.__output_format = output_format
+			Returns the complete url of the request that has been made
+		"""
+		return cls.__REQUEST_URL
 
-	def fetch_directions(self, mode="driving", **kwargs):
-		origin, destination = kwargs['origin'], kwargs['dest']
-		request_uri = self.__base_uri.format(self.__output_format)
-		resp = requests.get(request_uri, params={'origin':origin, 'destination':destination, 'mode':mode})
-		return resp
+	@classmethod
+	def fetch_directions(cls, mode="driving", **kwargs):
+		"""
+		   Given the origin and destination (addresses or points of interests),
+		   this function will make a request to Google and fetch the possible routes
+		"""
+		if 'origin' not in kwargs or 'destination' not in kwargs:
+			raise ValueError("Missing either an origin or destination")
+
+		# Ensure mode is valid
+		if not cls.is_valid_mode(mode):
+			raise ValueError(mode + " is not a valid mode of transport")
+
+		origin, destination = kwargs['origin'], kwargs['destination']
+
+		# Prepare the actual request uri
+		request_url = cls.__BASE_URL.format(cls.__CURRENT_OUTPUT_FORMAT)
+		resp = requests.get(request_url, params={'origin':origin, 'destination':destination, 'mode':mode})
+		cls.__REQUEST_URL = resp.url
+
+		# Return data
+		data = resp.json()
+
+		if data['status'] != "OK":
+			raise ValueError("Here's what went wrong: " + data['status'])
+
+		return data
