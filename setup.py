@@ -10,5 +10,5 @@ setup(name='pydirections',
       packages=['pydirections'],
        install_requires=[
           'requests',
-      ]
+      ],
       zip_safe=False)

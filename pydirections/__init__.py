@@ -1,2 +1,1 @@
-def get_directions():
-	print 'Getting directions ...'
+from .director import Director
