@@ -16,5 +16,5 @@ You can install PyDirections through pip by running the command:
 To request driving directions between two addresses, create a Director object and supply the two addresses.
 
 	import pydirections
-	director = pydirections.Director(origin="123 Fake St Springfield, MA", dest="5th Avenue Springfield, MA")
-	directions = director.fetch_directions()
+	director = pydirections.Director()
+	routes = director.fetch_directions(origin="123 Fake St Springfield, MA", dest="456 Fake St Springfield, MA", mode="driving")
