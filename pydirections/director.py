@@ -1,5 +1,7 @@
+from __future__ import absolute_import
+from builtins import object
 import requests
-from exceptions import MissingParameterError, InvalidModeError
+from .exceptions import MissingParameterError, InvalidModeError
 
 class Director(object):
 	"""
