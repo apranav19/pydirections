@@ -1,4 +1,5 @@
 import requests
+from exceptions import MissingParameterError, InvalidModeError
 
 class Director(object):
 	"""
@@ -38,13 +39,13 @@ class Director(object):
 		   this function will make a request to Google and fetch the possible routes
 		"""
 		if 'origin' not in kwargs or 'destination' not in kwargs:
-			raise ValueError("Missing either an origin or destination")
+			raise MissingParameterError("Missing either an origin or a destination")
 
 		mode = mode.lower() # Ensure consistency
 
 		# Ensure mode is valid
 		if not cls.is_valid_mode(mode):
-			raise ValueError(mode + " is not a valid mode of transport")
+			raise InvalidModeError(mode)
 
 		origin, destination = kwargs['origin'], kwargs['destination']
 
