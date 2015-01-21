@@ -1,5 +1,6 @@
 import unittest
 from pydirections.director import Director
+from pydirections.exceptions import InvalidModeError, MissingParameterError
 
 class TestModeValidity(unittest.TestCase):
 	def test_invalid_mode(self):
@@ -18,17 +19,17 @@ class TestDirectionFetching(unittest.TestCase):
 		"""
 			Tests if the required key-word args are missing or are invalid
 		"""
-		with self.assertRaises(ValueError):
+		with self.assertRaises(MissingParameterError):
 			Director.fetch_directions()
 
-		with self.assertRaises(ValueError):
+		with self.assertRaises(MissingParameterError):
 			Director.fetch_directions(origin="123 Fake Street Springfield, MA", dest="End")
 
 	def test_invalid_mode(self):
 		"""
 			Tests if an exception was raised if an invalid mode was provided
 		"""
-		with self.assertRaises(ValueError):
+		with self.assertRaises(InvalidModeError):
 			Director.fetch_directions(origin="San Francisco, CA", destination="Mountain View, CA", mode="flying")
 
 	def test_unimagineable_route(self):
