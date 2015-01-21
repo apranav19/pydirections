@@ -40,6 +40,8 @@ class Director(object):
 		if 'origin' not in kwargs or 'destination' not in kwargs:
 			raise ValueError("Missing either an origin or destination")
 
+		mode = mode.lower() # Ensure consistency
+
 		# Ensure mode is valid
 		if not cls.is_valid_mode(mode):
 			raise ValueError(mode + " is not a valid mode of transport")
