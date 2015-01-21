@@ -1,6 +1,5 @@
 argparse==1.2.1
 distribute==0.6.24
 future==0.14.3
--e git+git@github.com:apranav19/pydirections.git@cd95b443704a81a5687ca13113894e92b32837e3#egg=pydirections-dev
 requests==2.5.1
 wsgiref==0.1.2
