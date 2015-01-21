@@ -1,5 +1,7 @@
 # pydirections #
 
+[![Build Status](https://magnum.travis-ci.com/apranav19/pydirections.svg?token=1SB6Uw5qyBVN5BUSihPq&branch=basic_test_coverage)](https://magnum.travis-ci.com/apranav19/pydirections)
+
 PyDirections is an easy to use Python client for Google's [Directions](https://developers.google.com/maps/documentation/directions/) API.
 Through this client you can request directions between any two points for the following modes of transport:
 * Driving
