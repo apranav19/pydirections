@@ -1,6 +1,9 @@
 import unittest
+import os
 from pydirections.director import Director
-from pydirections.exceptions import InvalidModeError, MissingParameterError
+from pydirections.exceptions import InvalidModeError, MissingParameterError, InvalidAPIKeyError, MissingAPIKeyError
+
+test_api_key = os.environ['TEST_API_KEY']
 
 class TestModeValidity(unittest.TestCase):
 	def test_invalid_mode(self):
@@ -20,17 +23,17 @@ class TestDirectionFetching(unittest.TestCase):
 			Tests if the required key-word args are missing or are invalid
 		"""
 		with self.assertRaises(MissingParameterError):
-			Director.fetch_directions()
+			Director.configure_api_key(test_api_key).fetch_directions()
 
 		with self.assertRaises(MissingParameterError):
-			Director.fetch_directions(origin="123 Fake Street Springfield, MA", dest="End")
+			Director.configure_api_key(test_api_key).fetch_directions(origin="123 Fake Street Springfield, MA", dest="End")
 
 	def test_invalid_mode(self):
 		"""
 			Tests if an exception was raised if an invalid mode was provided
 		"""
 		with self.assertRaises(InvalidModeError):
-			Director.fetch_directions(origin="San Francisco, CA", destination="Mountain View, CA", mode="flying")
+			Director.configure_api_key(test_api_key).fetch_directions(origin="San Francisco, CA", destination="Mountain View, CA", mode="flying")
 
 	def test_unimagineable_route(self):
 		"""
@@ -41,9 +44,25 @@ class TestDirectionFetching(unittest.TestCase):
 		extreme_end_points = ("San Francisco, CA", "Tokyo, Japan")
 		for m in modes:
 			with self.assertRaises(ValueError):
-				Director.fetch_directions(origin=extreme_end_points[0], destination=extreme_end_points[1], mode=m)
+				Director.configure_api_key(test_api_key).fetch_directions(origin=extreme_end_points[0], destination=extreme_end_points[1], mode=m)
 
+class TestAPIKey(unittest.TestCase):
+	"""
+	    This class simply tests for the following scenarios:
+	    - An invalid api key
+	    - A call to fetch_directions() without configuring an api key
+	"""
 
+	def test_invalid_api_key(self):
+		""" Tests configure_api_key() with an invalid key """
+		invalid_key = 123456789
+		with self.assertRaises(InvalidAPIKeyError):
+			Director.configure_api_key(invalid_key)
+
+	def test_missing_api_key(self):
+		"""  Tests fetch_directions() without configuring an api key """
+		with self.assertRaises(MissingAPIKeyError):
+			Director.fetch_directions(origin="San Francisco, CA", destination="Palo Alto, CA")
 
 if __name__ == '__main__':
 	unittest.main()
