@@ -25,3 +25,23 @@ class MissingParameterError(ParameterError):
 	def __init__(self, msg):
 		super(MissingParameterError, self).__init__()
 		self.error_msg = self.error_msg.format(msg)
+
+class InvalidAPIKeyError(Exception):
+	"""
+		This particular exception handles a scenario if a non-string value was provided as the api key
+	"""
+	def __init__(self):
+		self.error_msg = "The API Key provided must be a string data type"
+
+	def __str__(self):
+		return repr(self.error_msg)
+
+class MissingAPIKeyError(Exception):
+	"""
+		This exception is raised when a user has not configured an API Key
+	"""
+	def __init__(self):
+		self.error_msg = "An API Key must be configured before requesting directions"
+
+	def __str__(self):
+		return repr(self.error_msg)

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from builtins import object
 import requests
-from .exceptions import MissingParameterError, InvalidModeError
+from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, MissingAPIKeyError
 
 class Director(object):
 	"""
@@ -9,9 +9,25 @@ class Director(object):
         HTTP responses from Google's Directions API.
 	"""
 	__ACCEPTABLE_MODES = set(["driving", "walking", "bicycling", "transit"])
-	__BASE_URL = "https://maps.googleapis.com/maps/api/directions/{0}?"
+	__BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?"
 	__REQUEST_URL = None
-	__CURRENT_OUTPUT_FORMAT = "json"
+	__CURRENT_API_KEY = None
+
+	@classmethod
+	def configure_api_key(cls, api_key):
+		"""
+		    This function configures the API Key for the current application/consumer
+		"""
+		if type(api_key) != str:
+			raise InvalidAPIKeyError
+
+		cls.__CURRENT_API_KEY = api_key
+		return cls
+
+	@classmethod
+	def has_configured_key(cls):
+		""" Checks whether an api key has been configured """
+		return cls.__CURRENT_API_KEY != None
 
 	@classmethod
 	def is_valid_mode(cls, mode):
@@ -51,9 +67,12 @@ class Director(object):
 
 		origin, destination = kwargs['origin'], kwargs['destination']
 
+		# Check if consumer has configured an API key
+		if not cls.has_configured_key():
+			raise MissingAPIKeyError
+
 		# Prepare the actual request uri
-		request_url = cls.__BASE_URL.format(cls.__CURRENT_OUTPUT_FORMAT)
-		resp = requests.get(request_url, params={'origin':origin, 'destination':destination, 'mode':mode})
+		resp = requests.get(cls.__BASE_URL, params={'origin':origin, 'destination':destination, 'mode':mode, 'key':cls.__CURRENT_API_KEY})
 		cls.__REQUEST_URL = resp.url
 
 		# Return data
