@@ -1,5 +1,18 @@
 from .exceptions import InvalidModeError, InvalidAPIKeyError
-ACCEPTABLE_MODES = set(["driving", "walking", "bicycling", "transit"])
+
+class ModeContainer(object):
+	"""
+		The purpose of this class is to simply validate modes
+	"""
+	__ACCEPTABLE_MODES = set(["driving", "walking", "bicycling", "transit"])
+
+	@classmethod
+	def validate_mode(cls, mode):
+		""" 
+			This function simply checks if a given mode exists in the
+			set of acceptable modes
+		"""
+		return mode in cls.__ACCEPTABLE_MODES
 
 class DirectionsRequest(object):
 	"""
@@ -16,9 +29,14 @@ class DirectionsRequest(object):
 
 	@property
 	def api_key(self):
+		""" Returns the currently configured api key """
 		return self.__api_key
 
 	def set_api_key(self, api_key):
+		"""
+			This function sets the API key for an instance of a DirectionsRequest class.
+			Raises an InvalidAPIKeyError if the provided key is not a string.
+		"""
 		if type(api_key) != str:
 			raise InvalidAPIKeyError
 		self.__api_key = api_key
@@ -26,10 +44,15 @@ class DirectionsRequest(object):
 	
 	@property
 	def mode(self):
-	    return self.__mode
+		""" Returns the currently configured mode of transportation """
+		return self.__mode
 
 	def set_mode(self, mode):
-		if mode not in ACCEPTABLE_MODES:
+		"""
+			This function configures the mode of transportation.
+			Raises an InvalidModeError if the mode provided does not exist.
+		"""
+		if not ModeContainer.validate_mode(mode):
 			raise InvalidModeError(mode)
 		self.__mode = mode
 		return self
