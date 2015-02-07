@@ -1,10 +1,12 @@
 from .exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
 
-class ModeContainer(object):
+class ParamContainer(object):
 	"""
-		The purpose of this class is to simply validate modes
+		The purpose of this class is to simply validate any pre-defined parameters
+		such as: possible modes, route restriction params
 	"""
 	__ACCEPTABLE_MODES = set(["driving", "walking", "bicycling", "transit"])
+	__ACCEPTABLE_RESTRICTIONS = set(["tolls", "highways", "ferries"])
 
 	@classmethod
 	def validate_mode(cls, mode):
@@ -13,6 +15,24 @@ class ModeContainer(object):
 			set of acceptable modes
 		"""
 		return mode in cls.__ACCEPTABLE_MODES
+
+	@classmethod
+	def __validate_restriction(cls, restriction):
+		"""
+			This function simply checks if a given restriction is valid
+		"""
+		return restriction in cls.__ACCEPTABLE_RESTRICTIONS
+
+	@classmethod
+	def validate_restrictions(cls, restrictions):
+		"""
+			This function applies validation on the restrictions provided
+		"""
+		for restriction in restrictions:
+			if not cls.__validate_restriction(restriction):
+				return False
+
+		return True
 
 class DirectionsRequest(object):
 	"""
@@ -53,7 +73,7 @@ class DirectionsRequest(object):
 			This function configures the mode of transportation.
 			Raises an InvalidModeError if the mode provided does not exist.
 		"""
-		if not ModeContainer.validate_mode(mode):
+		if not ParamContainer.validate_mode(mode):
 			raise InvalidModeError(mode)
 		self.__mode = mode
 		return self
@@ -65,3 +85,13 @@ class DirectionsRequest(object):
 		
 		self.__alternatives = alternative
 		return self
+
+	def set_route_restrictions(self, *args):
+		"""
+			This function configures the supplied restrictions for a route
+		"""
+		normalized_args = set(args)
+		if len(normalized_args) > 3:
+			raise ValueError("There are only 3 route restrictions")
+
+		return ParamContainer.validate_restrictions(normalized_args)
