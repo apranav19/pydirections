@@ -94,4 +94,9 @@ class DirectionsRequest(object):
 		if len(normalized_args) > 3:
 			raise ValueError("There are only 3 route restrictions")
 
-		return ParamContainer.validate_restrictions(normalized_args)
+		if not ParamContainer.validate_restrictions(normalized_args):
+			raise ValueError("Invalid route restrictions provided.")
+
+		self.__avoid = normalized_args
+		return self
+

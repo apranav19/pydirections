@@ -20,6 +20,13 @@ class TestOptionalParameters(unittest.TestCase):
 		with self.assertRaises(InvalidAlternativeError):
 			requester.set_alternatives('False')
 
+	def test_invalid_restrictions(self):
+		"""
+			Tests for invalid route restrictions
+		"""
+		with self.assertRaises(ValueError):
+			requester.set_route_restrictions("freeways", "railways")
+
 class TestAPIKey(unittest.TestCase):
 	
 	def test_invalid_api_key(self):
