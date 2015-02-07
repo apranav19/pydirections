@@ -73,7 +73,7 @@ class DirectionsRequest(object):
 			This function configures the mode of transportation.
 			Raises an InvalidModeError if the mode provided does not exist.
 		"""
-		if not ModeContainer.validate_mode(mode):
+		if not ParamContainer.validate_mode(mode):
 			raise InvalidModeError(mode)
 		self.__mode = mode
 		return self
