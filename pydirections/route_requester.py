@@ -1,4 +1,4 @@
-from .exceptions import InvalidModeError, InvalidAPIKeyError
+from .exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
 
 class ModeContainer(object):
 	"""
@@ -26,6 +26,7 @@ class DirectionsRequest(object):
 		self.__mode = "driving"
 		self.__origin = kwargs['origin']
 		self.__destination = kwargs['destination']
+		self.__alternatives = False
 
 	@property
 	def api_key(self):
@@ -55,4 +56,12 @@ class DirectionsRequest(object):
 		if not ModeContainer.validate_mode(mode):
 			raise InvalidModeError(mode)
 		self.__mode = mode
+		return self
+
+	def set_alternatives(self, alternative):
+		""" Toggles the alternative param if user wants alternative routes """
+		if type(alternative) != bool:
+			raise InvalidAlternativeError
+		
+		self.__alternatives = alternative
 		return self
