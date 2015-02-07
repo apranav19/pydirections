@@ -29,7 +29,7 @@ class ParamContainer(object):
 			This function applies validation on the restrictions provided
 		"""
 		for restriction in restrictions:
-			if not cls.__validate_restriction(restriction)
+			if not cls.__validate_restriction(restriction):
 				return False
 
 		return True
