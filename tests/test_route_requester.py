@@ -2,9 +2,9 @@ import unittest
 from pydirections.route_requester import DirectionsRequest
 from pydirections.exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
 
-class TestOptionalParameters(unittest.TestCase):
-	requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA")
+requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA")
 
+class TestOptionalParameters(unittest.TestCase):
 	def test_invalid_mode(self):
 		"""
 		    Tests the is_valid_mode function for an invalid input
@@ -22,8 +22,6 @@ class TestOptionalParameters(unittest.TestCase):
 
 class TestAPIKey(unittest.TestCase):
 	
-	requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA")
-
 	def test_invalid_api_key(self):
 		invalid_key = 123456
 		with self.assertRaises(InvalidAPIKeyError):
