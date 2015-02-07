@@ -1,4 +1,4 @@
-from .exceptions import InvalidModeError, InvalidAPIKeyError
+from .exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
 
 class ParamContainer(object):
 	"""
@@ -46,6 +46,7 @@ class DirectionsRequest(object):
 		self.__mode = "driving"
 		self.__origin = kwargs['origin']
 		self.__destination = kwargs['destination']
+		self.__alternatives = False
 
 	@property
 	def api_key(self):
@@ -77,6 +78,14 @@ class DirectionsRequest(object):
 		self.__mode = mode
 		return self
 
+	def set_alternatives(self, alternative):
+		""" Toggles the alternative param if user wants alternative routes """
+		if type(alternative) != bool:
+			raise InvalidAlternativeError
+		
+		self.__alternatives = alternative
+		return self
+
 	def set_route_restrictions(self, *args):
 		"""
 			This function configures the supplied restrictions for a route
@@ -86,6 +95,3 @@ class DirectionsRequest(object):
 			raise ValueError("There are only 3 route restrictions")
 
 		return ParamContainer.validate_restrictions(normalized_args)
-
-
-

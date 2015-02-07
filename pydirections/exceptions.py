@@ -45,3 +45,13 @@ class MissingAPIKeyError(Exception):
 
 	def __str__(self):
 		return repr(self.error_msg)
+
+class InvalidAlternativeError(Exception):
+	"""
+		This exception is raised when a user provides a non-boolean value
+	"""
+	def __init__(self):
+		self.error_msg = "The Alertnative parameter must be set to either True or False"
+
+	def __str__(self):
+		return repr(self.error_msg)
