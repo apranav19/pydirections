@@ -1,4 +1,6 @@
 from .exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
+import re
+import json
 
 class ParamContainer(object):
 	"""
@@ -97,6 +99,25 @@ class DirectionsRequest(object):
 		if not ParamContainer.validate_restrictions(normalized_args):
 			raise ValueError("Invalid route restrictions provided.")
 
-		self.__avoid = normalized_args
+		self.__avoid = list(normalized_args)
 		return self
 
+	def get_payload(self):
+		"""
+			This function converts an instance of DirectionsRequest to a dictionary
+		"""
+		payload = {}
+		for attr in dir(self):
+			res = re.match(r'_DirectionsRequest__([a-z]+)', attr)
+			if res is None:
+				break
+			payload_attr_val = getattr(self, attr)
+			payload_attr_key = res.groups()[0]
+
+			if type(payload_attr_val) == list:
+				payload[payload_attr_key] = ('|').join(payload_attr_val)
+			else:
+				payload[payload_attr_key] = payload_attr_val
+		
+		return payload
+		
