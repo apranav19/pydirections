@@ -1,4 +1,4 @@
-from .exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
+from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
 import re
 import json
 
@@ -46,6 +46,15 @@ class DirectionsRequest(object):
 			Addtionally, it will set the default mode of transportation as driving
 		"""
 		self.__mode = "driving"
+
+		# Check for missing origin args
+		if 'origin' not in kwargs:
+			raise MissingParameterError('Missing an origin parameter')
+
+		# Check for missing destination arg
+		if 'destination' not in kwargs:
+			raise MissingParameterError('Missing a destination parameter')
+		
 		self.__origin = kwargs['origin']
 		self.__destination = kwargs['destination']
 		self.__alternatives = False
