@@ -115,18 +115,18 @@ class DirectionsRequest(object):
 		"""
 			This function converts an instance of DirectionsRequest to a dictionary
 		"""
-		payload = {}
-		for attr in dir(self):
-			res = re.match(r'_DirectionsRequest__([a-z]+)', attr)
-			if res is None:
-				break
-			payload_attr_val = getattr(self, attr)
-			payload_attr_key = res.groups()[0]
-
-			if type(payload_attr_val) == list:
-				payload[payload_attr_key] = ('|').join(payload_attr_val)
+		res_payload, current_payload, REGEX_PATTERN ={}, self.__dict__, '_DirectionsRequest__'
+		for param in current_payload:
+			clean_param = re.split(REGEX_PATTERN, param)[1]
+			current_value = current_payload[param]
+			if clean_param == 'avoid':
+				res_payload[clean_param] = self.format_route_restrictions(current_value)
 			else:
-				payload[payload_attr_key] = payload_attr_val
-		
-		return payload
-		
+				res_payload[clean_param] = current_payload[param]
+		return res_payload
+
+	def format_route_restrictions(self, restrictions):
+		"""
+			This function formats the route restrictions parameters accordingly
+		"""
+		return ('|').join(restrictions)

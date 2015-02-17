@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from builtins import object
 import requests
 from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, MissingAPIKeyError
-from .route_request import DirectionsRequest
+from .route_requester import DirectionsRequest
 
 class Director(object):
 	"""
