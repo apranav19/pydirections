@@ -1,4 +1,6 @@
-from .exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
+from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
+import re
+import json
 
 class ParamContainer(object):
 	"""
@@ -44,9 +46,17 @@ class DirectionsRequest(object):
 			Addtionally, it will set the default mode of transportation as driving
 		"""
 		self.__mode = "driving"
+
+		# Check for missing origin args
+		if 'origin' not in kwargs:
+			raise MissingParameterError('Missing an origin parameter')
+
+		# Check for missing destination arg
+		if 'destination' not in kwargs:
+			raise MissingParameterError('Missing a destination parameter')
+		
 		self.__origin = kwargs['origin']
 		self.__destination = kwargs['destination']
-		self.__alternatives = False
 
 	@property
 	def api_key(self):
@@ -97,6 +107,25 @@ class DirectionsRequest(object):
 		if not ParamContainer.validate_restrictions(normalized_args):
 			raise ValueError("Invalid route restrictions provided.")
 
-		self.__avoid = normalized_args
+		self.__avoid = list(normalized_args)
 		return self
 
+	def get_payload(self):
+		"""
+			This function converts an instance of DirectionsRequest to a dictionary
+		"""
+		res_payload, current_payload, REGEX_PATTERN = {}, self.__dict__, '_DirectionsRequest__'
+		for param in current_payload:
+			clean_param = re.split(REGEX_PATTERN, param)[1]
+			current_value = current_payload[param]
+			if clean_param == 'avoid':
+				res_payload[clean_param] = self.format_route_restrictions(current_value)
+			else:
+				res_payload[clean_param] = current_payload[param]
+		return res_payload
+
+	def format_route_restrictions(self, restrictions):
+		"""
+			This function formats the route restrictions parameters accordingly
+		"""
+		return ('|').join(restrictions)

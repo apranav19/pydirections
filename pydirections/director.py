@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from builtins import object
 import requests
 from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, MissingAPIKeyError
+from .route_requester import DirectionsRequest
 
 class Director(object):
 	"""
@@ -51,34 +52,10 @@ class Director(object):
 		return cls.__REQUEST_URL
 
 	@classmethod
-	def fetch_directions(cls, mode="driving", **kwargs):
+	def fetch_directions(cls, request_object):
 		"""
 		   Given the origin and destination (addresses or points of interests),
 		   this function will make a request to Google and fetch the possible routes
 		"""
-		if 'origin' not in kwargs or 'destination' not in kwargs:
-			raise MissingParameterError("Missing either an origin or a destination")
-
-		mode = mode.lower() # Ensure consistency
-
-		# Ensure mode is valid
-		if not cls.is_valid_mode(mode):
-			raise InvalidModeError(mode)
-
-		origin, destination = kwargs['origin'], kwargs['destination']
-
-		# Check if consumer has configured an API key
-		if not cls.has_configured_key():
-			raise MissingAPIKeyError
-
-		# Prepare the actual request uri
-		resp = requests.get(cls.__BASE_URL, params={'origin':origin, 'destination':destination, 'mode':mode, 'key':cls.__CURRENT_API_KEY})
-		cls.__REQUEST_URL = resp.url
-
-		# Return data
-		data = resp.json()
-
-		if data['status'] != "OK":
-			raise ValueError("Here's what went wrong: " + data['status'])
-
-		return data
+		return None
+		
