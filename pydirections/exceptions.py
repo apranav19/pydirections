@@ -51,7 +51,18 @@ class InvalidAlternativeError(Exception):
 		This exception is raised when a user provides a non-boolean value
 	"""
 	def __init__(self):
-		self.error_msg = "The Alertnative parameter must be set to either True or False"
+		self.error_msg = "The Alternative parameter must be set to either True or False"
+
+	def __str__(self):
+		return repr(self.error_msg)
+
+class InvalidRequestObjectError(Exception):
+	"""
+		This exception is raised when a user provides an object (that is not an instance of
+		the DirectionsRequest class) to Director's fetch_directions()
+	"""
+	def __init__(self):
+		self.error_msg = "The request_object must be an instance of the DirectionsRequest class"
 
 	def __str__(self):
 		return repr(self.error_msg)
