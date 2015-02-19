@@ -57,7 +57,6 @@ class DirectionsRequest(object):
 		
 		self.__origin = kwargs['origin']
 		self.__destination = kwargs['destination']
-		self.__alternatives = False
 
 	@property
 	def api_key(self):
@@ -115,7 +114,7 @@ class DirectionsRequest(object):
 		"""
 			This function converts an instance of DirectionsRequest to a dictionary
 		"""
-		res_payload, current_payload, REGEX_PATTERN ={}, self.__dict__, '_DirectionsRequest__'
+		res_payload, current_payload, REGEX_PATTERN = {}, self.__dict__, '_DirectionsRequest__'
 		for param in current_payload:
 			clean_param = re.split(REGEX_PATTERN, param)[1]
 			current_value = current_payload[param]
