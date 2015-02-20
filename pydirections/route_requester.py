@@ -1,4 +1,4 @@
-from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
+from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError, MissingAPIKeyError
 import re
 import json
 
@@ -45,7 +45,6 @@ class DirectionsRequest(object):
 			The constructor will set values for the required params i.e. origin & destination
 			Addtionally, it will set the default mode of transportation as driving
 		"""
-		self.__mode = "driving"
 
 		# Check for missing origin args
 		if 'origin' not in kwargs:
@@ -54,14 +53,19 @@ class DirectionsRequest(object):
 		# Check for missing destination arg
 		if 'destination' not in kwargs:
 			raise MissingParameterError('Missing a destination parameter')
+
+		if 'key' not in kwargs:
+			raise MissingAPIKeyError()
 		
 		self.__origin = kwargs['origin']
 		self.__destination = kwargs['destination']
+		self.__key = kwargs['key']
+		self.__mode = "driving"
 
 	@property
-	def api_key(self):
+	def key(self):
 		""" Returns the currently configured api key """
-		return self.__api_key
+		return self.__key
 
 	def set_api_key(self, api_key):
 		"""
@@ -70,7 +74,7 @@ class DirectionsRequest(object):
 		"""
 		if type(api_key) != str:
 			raise InvalidAPIKeyError
-		self.__api_key = api_key
+		self.__key = api_key
 		return self
 	
 	@property
@@ -119,13 +123,13 @@ class DirectionsRequest(object):
 			clean_param = re.split(REGEX_PATTERN, param)[1]
 			current_value = current_payload[param]
 			if clean_param == 'avoid':
-				res_payload[clean_param] = self.format_route_restrictions(current_value)
+				res_payload[clean_param] = self.__format_route_restrictions(current_value)
 			else:
 				res_payload[clean_param] = current_payload[param]
 		return res_payload
 
-	def format_route_restrictions(self, restrictions):
+	def __format_route_restrictions(self, restrictions):
 		"""
-			This function formats the route restrictions parameters accordingly
+			This private function formats the route restrictions parameters accordingly
 		"""
 		return ('|').join(restrictions)
