@@ -38,7 +38,5 @@ class Director(object):
 		resp = requests.get(cls.__BASE_URL, params=request_object.get_payload())
 		cls.__REQUEST_URL = resp.url
 
-		print resp.json()
-
-		return None
+		return resp.json()
 		
