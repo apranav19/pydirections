@@ -1,8 +1,10 @@
-from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError, MissingAPIKeyError
+from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError
+from .exceptions import InvalidAlternativeError, MissingAPIKeyError, InvalidRouteRestrictionError
 import re
 import json
 
-class ParamContainer(object):
+
+class ParameterValidationContainer(object):
 	"""
 		The purpose of this class is to simply validate any pre-defined parameters
 		such as: possible modes, route restriction params
@@ -19,19 +21,12 @@ class ParamContainer(object):
 		return mode in cls.__ACCEPTABLE_MODES
 
 	@classmethod
-	def __validate_restriction(cls, restriction):
-		"""
-			This function simply checks if a given restriction is valid
-		"""
-		return restriction in cls.__ACCEPTABLE_RESTRICTIONS
-
-	@classmethod
 	def validate_restrictions(cls, restrictions):
 		"""
 			This function applies validation on the restrictions provided
 		"""
 		for restriction in restrictions:
-			if not cls.__validate_restriction(restriction):
+			if not restriction in cls.__ACCEPTABLE_RESTRICTIONS:
 				return False
 
 		return True
@@ -40,27 +35,25 @@ class DirectionsRequest(object):
 	"""
 		This class holds all the necessary information required for a proposed route
 	"""
+	REQUEST_ERROR_MESSSAGES = {
+		'missing_params': "Missing the {0} parameter",
+		'invalid_route_restrictions': "Invalid route restrictions provided",
+		'invalid_mode': "{0} is not a valid mode"
+	}
+
 	def __init__(self, **kwargs):
 		"""
 			The constructor will set values for the required params i.e. origin & destination
 			Addtionally, it will set the default mode of transportation as driving
 		"""
 
-		# Check for missing origin args
-		if 'origin' not in kwargs:
-			raise MissingParameterError('Missing an origin parameter')
-
-		# Check for missing destination arg
-		if 'destination' not in kwargs:
-			raise MissingParameterError('Missing a destination parameter')
-
-		if 'key' not in kwargs:
-			raise MissingAPIKeyError()
-		
-		self.__origin = kwargs['origin']
-		self.__destination = kwargs['destination']
-		self.__key = kwargs['key']
-		self.__mode = "driving"
+		try: # Check for required params
+			self.__origin = kwargs['origin']
+			self.__destination = kwargs['destination']
+			self.__key = kwargs['key']
+			self.__mode = "driving"
+		except KeyError as key_err:
+			raise MissingParameterError(DirectionsRequest.REQUEST_ERROR_MESSSAGES['missing_params'].format(key_err))
 
 	@property
 	def key(self):
@@ -87,8 +80,8 @@ class DirectionsRequest(object):
 			This function configures the mode of transportation.
 			Raises an InvalidModeError if the mode provided does not exist.
 		"""
-		if not ParamContainer.validate_mode(mode):
-			raise InvalidModeError(mode)
+		if not ParameterValidationContainer.validate_mode(mode):
+			raise InvalidModeError(self.REQUEST_ERROR_MESSSAGES['invalid_mode'].format(mode))
 		self.__mode = mode
 		return self
 
@@ -108,8 +101,8 @@ class DirectionsRequest(object):
 		if len(normalized_args) > 3:
 			raise ValueError("There are only 3 route restrictions")
 
-		if not ParamContainer.validate_restrictions(normalized_args):
-			raise ValueError("Invalid route restrictions provided.")
+		if not ParameterValidationContainer.validate_restrictions(normalized_args):
+			raise InvalidRouteRestrictionError(self.REQUEST_ERROR_MESSSAGES['invalid_route_restrictions'])
 
 		self.__avoid = list(normalized_args)
 		return self
