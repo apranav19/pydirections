@@ -66,3 +66,10 @@ class InvalidRequestObjectError(Exception):
 
 	def __str__(self):
 		return repr(self.error_msg)
+
+class InvalidRouteRestrictionError(ParameterError):
+	def __init__(self, msg):
+		self.error_msg = msg
+
+	def __str__(self):
+		return repr(self.error_msg)

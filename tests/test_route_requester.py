@@ -1,6 +1,7 @@
 import unittest
 from pydirections.route_requester import DirectionsRequest
 from pydirections.exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
+from pydirections.exceptions import InvalidRouteRestrictionError
 import os
 
 MAPS_API_KEY = os.environ['MAPS_API_KEY']
@@ -28,7 +29,7 @@ class TestOptionalParameters(unittest.TestCase):
 			Tests for invalid route restrictions
 		"""
 		requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA", key=MAPS_API_KEY)
-		with self.assertRaises(ValueError):
+		with self.assertRaises(InvalidRouteRestrictionError):
 			requester.set_route_restrictions("freeways", "railways")
 
 class TestAPIKey(unittest.TestCase):
