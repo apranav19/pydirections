@@ -3,6 +3,7 @@ from builtins import object
 import requests
 from .exceptions import MissingParameterError, InvalidModeError, InvalidAPIKeyError, MissingAPIKeyError, InvalidRequestObjectError
 from .route_requester import DirectionsRequest
+from .route_responses import DirectionsResponse
 
 class Director(object):
 	"""
@@ -38,5 +39,9 @@ class Director(object):
 		resp = requests.get(cls.__BASE_URL, params=request_object.get_payload())
 		cls.__REQUEST_URL = resp.url
 
-		return resp.json()
+		return cls.__serialize_response(resp.json())
+
+	@classmethod
+	def __serialize_response(cls, stream):
+		return DirectionsResponse(stream['status'], stream['routes'])
 		
