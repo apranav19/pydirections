@@ -39,7 +39,7 @@ class Director(object):
 		resp = requests.get(cls.__BASE_URL, params=request_object.get_payload())
 		cls.__REQUEST_URL = resp.url
 
-		return cls.__serialize_response(resp.json())
+		return resp.json()
 
 	@classmethod
 	def __serialize_response(cls, stream):
