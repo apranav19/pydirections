@@ -12,6 +12,7 @@ class Director(object):
 	"""
 	__BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?"
 	__REQUEST_URL = None
+	__RESPONSE_ELEMENTS = ("status", "routes")
 
 	@classmethod
 	def get_base_url(cls):
@@ -39,9 +40,9 @@ class Director(object):
 		resp = requests.get(cls.__BASE_URL, params=request_object.get_payload())
 		cls.__REQUEST_URL = resp.url
 
-		return resp.json()
+		return cls.__serialize_response(resp.json())
 
 	@classmethod
 	def __serialize_response(cls, stream):
-		return DirectionsResponse(stream['status'], stream['routes'])
+		return DirectionsResponse(stream[__RESPONSE_ELEMENTS[0]], stream[__RESPONSE_ELEMENTS[1]])
 		
