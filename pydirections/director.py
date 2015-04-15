@@ -44,5 +44,5 @@ class Director(object):
 
 	@classmethod
 	def __serialize_response(cls, stream):
-		return DirectionsResponse(stream[__RESPONSE_ELEMENTS[0]], stream[__RESPONSE_ELEMENTS[1]])
+		return DirectionsResponse(stream[cls.__RESPONSE_ELEMENTS[0]], stream[cls.__RESPONSE_ELEMENTS[1]])
 		
