@@ -1,6 +1,8 @@
 from schematics.models import Model
 from schematics.types import StringType
 
+from models.models import Route
+
 class DirectionsResponse(object):
 	"""
 		The Directions Response class represents a response.
@@ -19,13 +21,3 @@ class DirectionsResponse(object):
 	@property
 	def routes(self):
 	    return self.__routes
-
-class Route(Model):
-	"""
-		Represents an individual route whose attributes include
-	"""
-	__summary = StringType(required=True)
-
-	@property
-	def summary():
-		return __summary
