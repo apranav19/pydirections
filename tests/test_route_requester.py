@@ -1,4 +1,5 @@
 import unittest
+from pydirections.director import Director
 from pydirections.route_requester import DirectionsRequest
 from pydirections.exceptions import InvalidModeError, InvalidAPIKeyError, InvalidAlternativeError
 from pydirections.exceptions import InvalidRouteRestrictionError
@@ -38,6 +39,12 @@ class TestAPIKey(unittest.TestCase):
 		invalid_key = 123456
 		with self.assertRaises(InvalidAPIKeyError):
 			requester.set_api_key(invalid_key)
+
+class TestBasicResponse(unittest.TestCase):
+	def test_basic_valid_response(self):
+		requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA", key=MAPS_API_KEY)
+		response = Director.fetch_directions(requester)
+		self.assertEqual(response.status, "OK")
 
 if __name__ == '__main__':
 	unittest.main()
