@@ -1,7 +1,7 @@
 from schematics.models import Model
 from schematics.types import StringType
 
-from models.models import Route
+from .models import Route
 
 class DirectionsResponse(object):
 	"""
