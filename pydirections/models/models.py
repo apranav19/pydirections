@@ -1,5 +1,21 @@
 from schematics.models import Model
-from schematics.types import StringType
+from schematics.types import StringType, DecimalType
+from schematics.types.compound import ListType
+
+class Distance(Model):
+	"""
+		Represents the duration of a leg/step
+	"""
+	value = DecimalType()
+	text = StringType()
+
+class Duration(Model):
+	"""
+		Represents the duration of a leg/step
+	"""
+	value = DecimalType()
+	text = StringType()
+
 
 class Step(Model):
 	"""
@@ -13,13 +29,15 @@ class Leg(Model):
 	"""
 	start_address = StringType()
 	end_address = StringType()
-	
+	steps = ListType(ModelType(Step))
+
 
 class Route(Model):
 	"""
 		Represents an individual route whose attributes include
 	"""
 	summary = StringType(required=True)
+	legs = ListType(ModelType(Leg))
 	copyrights = StringType()
 
 	@property
