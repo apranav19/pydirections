@@ -48,41 +48,43 @@ class DirectionsRequest(object):
 		"""
 
 		try: # Check for required params
-			self.origin = kwargs['origin']
-			self.destination = kwargs['destination']
-			self.key = kwargs['key']
-			self.mode = "driving"
+			self._origin = kwargs['origin']
+			self._destination = kwargs['destination']
+			self._key = kwargs['key']
+			self._mode = "driving"
 		except KeyError as key_err:
 			raise MissingParameterError(DirectionsRequest.REQUEST_ERROR_MESSSAGES['missing_params'].format(key_err))
 
 	@property
 	def key(self):
 		""" Returns the currently configured api key """
-		return self.key
+		return self._key
 
-	def set_api_key(self, api_key):
+	@key.setter
+	def key(self, api_key):
 		"""
 			This function sets the API key for an instance of a DirectionsRequest class.
 			Raises an InvalidAPIKeyError if the provided key is not a string.
 		"""
 		if type(api_key) != str:
 			raise InvalidAPIKeyError
-		self.key = api_key
+		self._key = api_key
 		return self
 
 	@property
 	def mode(self):
 		""" Returns the currently configured mode of transportation """
-		return self.mode
+		return self._mode
 
-	def set_mode(self, mode):
+	@mode.setter
+	def mode(self, mode):
 		"""
 			This function configures the mode of transportation.
 			Raises an InvalidModeError if the mode provided does not exist.
 		"""
 		if not ParameterValidationContainer.validate_mode(mode):
 			raise InvalidModeError(self.REQUEST_ERROR_MESSSAGES['invalid_mode'].format(mode))
-		self.mode = mode
+		self._mode = mode
 		return self
 
 	def set_alternatives(self, alternative):
@@ -111,7 +113,7 @@ class DirectionsRequest(object):
 		"""
 			This function converts an instance of DirectionsRequest to a dictionary
 		"""
-		res_payload, current_payload, REGEX_PATTERN = {}, self.__dict__, '_DirectionsRequest__'
+		res_payload, current_payload, REGEX_PATTERN = {}, self.__dict__, '_'
 		for param in current_payload:
 			clean_param = re.split(REGEX_PATTERN, param)[1]
 			current_value = current_payload[param]
