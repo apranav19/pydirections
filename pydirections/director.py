@@ -10,23 +10,23 @@ class Director(object):
         The Director class is responsible for handling a user's requests and processing the
         HTTP responses from Google's Directions API.
 	"""
-	__BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?"
-	__REQUEST_URL = None
-	__RESPONSE_ELEMENTS = ("status", "routes")
+	BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?"
+	REQUEST_URL = None
+	RESPONSE_ELEMENTS = ("status", "routes")
 
 	@classmethod
 	def get_base_url(cls):
 		"""
 			Returns the base uri
 		"""
-		return cls.__BASE_URL
+		return cls.BASE_URL
 
 	@classmethod
 	def get_request_url(cls):
 		"""
 			Returns the complete url of the request that has been made
 		"""
-		return cls.__REQUEST_URL
+		return cls.REQUEST_URL
 
 	@classmethod
 	def fetch_directions(cls, request_object):
@@ -37,12 +37,11 @@ class Director(object):
 		if not isinstance(request_object, DirectionsRequest):
 			raise InvalidRequestObjectError()
 
-		resp = requests.get(cls.__BASE_URL, params=request_object.get_payload())
-		cls.__REQUEST_URL = resp.url
+		resp = requests.get(cls.BASE_URL, params=request_object.get_payload())
+		cls.REQUEST_URL = resp.url
 
 		return cls.__serialize_response(resp.json())
 
 	@classmethod
 	def __serialize_response(cls, stream):
-		return DirectionsResponse(stream[cls.__RESPONSE_ELEMENTS[0]], stream[cls.__RESPONSE_ELEMENTS[1]])
-		
+		return DirectionsResponse(stream[cls.RESPONSE_ELEMENTS[0]], stream[cls.RESPONSE_ELEMENTS[1]])

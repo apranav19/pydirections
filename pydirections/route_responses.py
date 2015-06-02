@@ -11,13 +11,21 @@ class DirectionsResponse(object):
 		2. Routes - Represents an array of routes from origin to destination
 	"""
 	def __init__(self, status, routes):
-		self.__status = status
-		self.__routes = routes
+		self._status = status
+		self._routes = routes
 
 	@property
 	def status(self):
-		return self.__status
+		return self._status
+
+	@status.setter
+	def status(self, status):
+		self._status = status
 
 	@property
 	def routes(self):
-	    return self.__routes
+	    return self._routes
+
+	@routes.setter
+	def routes(self, routes):
+		self._routes = routes

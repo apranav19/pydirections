@@ -1,6 +1,6 @@
 from schematics.models import Model
 from schematics.types import StringType, DecimalType
-from schematics.types.compound import ListType
+from schematics.types.compound import ListType, ModelType
 
 class Distance(Model):
 	"""

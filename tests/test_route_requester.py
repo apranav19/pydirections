@@ -14,7 +14,7 @@ class TestOptionalParameters(unittest.TestCase):
 		"""
 		requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA", key=MAPS_API_KEY)
 		with self.assertRaises(InvalidModeError):
-			requester.set_mode("flying")
+			requester.mode = "flying"
 
 	def test_invalid_alternative(self):
 		"""
@@ -38,7 +38,7 @@ class TestAPIKey(unittest.TestCase):
 		requester = DirectionsRequest(origin="San Francisco, CA", destination="Palo Alto, CA", key=MAPS_API_KEY)
 		invalid_key = 123456
 		with self.assertRaises(InvalidAPIKeyError):
-			requester.set_api_key(invalid_key)
+			requester.key = invalid_key
 
 class TestBasicResponse(unittest.TestCase):
 	def test_basic_valid_response(self):
